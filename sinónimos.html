@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad de Sinónimos Avanzados</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:20px;
+}
+
+h1{
+    text-align:center;
+    color:#2c3e50;
+}
+
+.instrucciones{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 0 5px rgba(0,0,0,0.2);
+}
+
+.contenedor{
+    display:flex;
+    justify-content:space-between;
+    gap:30px;
+}
+
+.columna{
+    width:45%;
+}
+
+.draggable{
+    background:#3498db;
+    color:white;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    cursor:grab;
+    text-align:center;
+    font-weight:bold;
+}
+
+.dropzone{
+    background:white;
+    border:2px dashed #7f8c8d;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    min-height:25px;
+    font-weight:bold;
+}
+
+.correcto{
+    background:#2ecc71 !important;
+    color:white;
+}
+
+.incorrecto{
+    background:#e74c3c !important;
+    color:white;
+}
+
+button{
+    display:block;
+    margin:25px auto;
+    padding:12px 25px;
+    font-size:16px;
+    background:#27ae60;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+#resultado{
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+    margin-top:20px;
+}
+</style>
+</head>
+<body>
+
+<h1>Sinónimos Avanzados: Arrastrar y Soltar</h1>
+
+<div class="instrucciones">
+<p><strong>Instrucciones:</strong> Arrastra cada palabra de la izquierda hacia el sinónimo correcto de la derecha.</p>
+</div>
+
+<div class="contenedor">
+
+<div class="columna">
+<h2>Palabras</h2>
+
+<div class="draggable" draggable="true" id="prolijo">Prolijo</div>
+<div class="draggable" draggable="true" id="perspicaz">Perspicaz</div>
+<div class="draggable" draggable="true" id="lacónico">Lacónico</div>
+<div class="draggable" draggable="true" id="efimero">Efímero</div>
+<div class="draggable" draggable="true" id="beligerante">Beligerante</div>
+<div class="draggable" draggable="true" id="parsimonioso">Parsimonioso</div>
+<div class="draggable" draggable="true" id="elocuente">Elocuente</div>
+<div class="draggable" draggable="true" id="inmutable">Inmutable</div>
+<div class="draggable" draggable="true" id="vehemente">Vehemente</div>
+
+</div>
+
+<div class="columna">
+<h2>Sinónimos</h2>
+
+<div class="dropzone" data-match="perspicaz">Sagaz</div>
+<div class="dropzone" data-match="vehemente">Apasionado</div>
+<div class="dropzone" data-match="lacónico">Conciso</div>
+<div class="dropzone" data-match="inmutable">Constante</div>
+<div class="dropzone" data-match="prolijo">Meticuloso</div>
+<div class="dropzone" data-match="efimero">Fugaz</div>
+<div class="dropzone" data-match="beligerante">Combativo</div>
+<div class="dropzone" data-match="parsimonioso">Pausado</div>
+<div class="dropzone" data-match="elocuente">Expresivo</div>
+
+</div>
+
+</div>
+
+<button onclick="verificar()">Verificar respuestas</button>
+
+<div id="resultado"></div>
+
+<script>
+
+let elementos = document.querySelectorAll('.draggable');
+let zonas = document.querySelectorAll('.dropzone');
+
+elementos.forEach(elemento => {
+
+    elemento.addEventListener('dragstart', (e)=>{
+        e.dataTransfer.setData("text", e.target.id);
+    });
+
+});
+
+zonas.forEach(zona => {
+
+    zona.addEventListener('dragover', (e)=>{
+        e.preventDefault();
+    });
+
+    zona.addEventListener('drop', (e)=>{
+        e.preventDefault();
+
+        let id = e.dataTransfer.getData("text");
+        let elemento = document.getElementById(id);
+
+        if(zona.children.length === 0){
+            zona.appendChild(elemento);
+        }
+    });
+
+});
+
+function verificar(){
+
+    let correctas = 0;
+
+    zonas.forEach(zona => {
+
+        zona.classList.remove("correcto","incorrecto");
+
+        if(zona.children.length > 0){
+
+            let respuesta = zona.children[0].id;
+
+            if(respuesta === zona.dataset.match){
+                zona.classList.add("correcto");
+                correctas++;
+            }else{
+                zona.classList.add("incorrecto");
+            }
+
+        }else{
+            zona.classList.add("incorrecto");
+        }
+
+    });
+
+    document.getElementById("resultado").innerHTML =
+    "Puntuación: " + correctas + " de 9 respuestas correctas.";
+}
+
+</script>
+
+</body>
+</html>
